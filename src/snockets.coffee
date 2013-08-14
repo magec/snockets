@@ -186,11 +186,12 @@ module.exports = class Snockets
   # Wrapper around fs.readdir or fs.readdirSync, depending on flags.async.
   readdir: (dir, flags, callback) ->
     if flags.async
-      fs.readdir @absPath(dir), callback
+      fs.readdir @absPath(dir), (err, files) ->
+        callback(err, files.sort())
     else
       try
         files = fs.readdirSync @absPath(dir)
-        callback null, files
+        callback null, files.sort()
       catch e
         callback e
 
