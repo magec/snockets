@@ -187,7 +187,7 @@ module.exports = class Snockets
   readdir: (dir, flags, callback) ->
     if flags.async
       fs.readdir @absPath(dir), (err, files) ->
-        callback(err, files.sort())
+        callback err, files.sort()
     else
       try
         files = fs.readdirSync @absPath(dir)
