@@ -12,6 +12,7 @@ module.exports = class Snockets
   constructor: (@options = {}) ->
     @options.src ?= '.'
     @options.async ?= true
+    @options.sort ?= false
     @cache = {}
     @concatCache = {}
     @depGraph = new DepGraph
@@ -23,6 +24,7 @@ module.exports = class Snockets
       callback = flags; flags = {}
     flags ?= {}
     flags.async ?= @options.async
+    flags.sort  ?= @options.sort
 
     @updateDirectives filePath, flags, (err, graphChanged) =>
       if err
@@ -35,6 +37,7 @@ module.exports = class Snockets
       callback = flags; flags = {}
     flags ?= {}
     flags.async ?= @options.async
+    flags.sort  ?= @options.sort
 
     @updateDirectives filePath, flags, (err, graphChanged) =>
       if err
@@ -61,6 +64,7 @@ module.exports = class Snockets
       callback = flags; flags = {}
     flags ?= {}
     flags.async ?= @options.async
+    flags.sort  ?= @options.sort
     concatenationChanged = true
 
     @updateDirectives filePath, flags, (err, graphChanged) =>
@@ -187,11 +191,11 @@ module.exports = class Snockets
   readdir: (dir, flags, callback) ->
     if flags.async
       fs.readdir @absPath(dir), (err, files) ->
-        callback err, files.sort()
+        callback err, if flags.sort then files.sort() else files
     else
       try
         files = fs.readdirSync @absPath(dir)
-        callback null, files.sort()
+        callback null, if flags.sort then files.sort() else files
       catch e
         callback e
 
